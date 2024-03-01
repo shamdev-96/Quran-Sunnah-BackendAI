@@ -1,0 +1,87 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Quran-Sunnah AI Backend API",
+    "description": "List of REST APIs that integrate with OpenAI to ask questions based on source of Quran & Hadith",
+    "termsOfService": "https://example.com/terms",
+    "contact": {
+      "name": "Syafisham",
+      "email": "syafishamsalleh@gmail.com"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/QuranSunnahAI/version": {
+      "get": {
+        "tags": [
+          "QuranSunnahAI"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/QuranSunnahAI/ask": {
+      "post": {
+        "tags": [
+          "QuranSunnahAI"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/AskPayloadRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AskPayloadRequest": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "ApiKey": {
+      "type": "apiKey",
+      "name": "XApiKey",
+      "in": "header",
+      "description": "ApiKey must appear in header"
+    }
+  },
+  "security": [
+    {
+      "ApiKey": [ ]
+    }
+  ]
+}

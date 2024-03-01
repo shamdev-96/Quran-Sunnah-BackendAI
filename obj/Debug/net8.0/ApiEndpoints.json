@@ -1,0 +1,38 @@
+[
+  {
+    "ContainingType": "Quran_Sunnah_BackendAI.Controllers.QuranSunnahAIController",
+    "Method": "AskAI",
+    "RelativePath": "QuranSunnahAI/ask",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Quran_Sunnah_BackendAI.Dtos.AskPayloadRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Quran_Sunnah_BackendAI.Controllers.QuranSunnahAIController",
+    "Method": "Version",
+    "RelativePath": "QuranSunnahAI/version",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]

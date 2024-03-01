@@ -1,0 +1,6 @@
+@Quran_Sunnah_BackendAI_HostAddress = http://localhost:5056
+
+GET {{Quran_Sunnah_BackendAI_HostAddress}}/
+Accept: application/json
+
+###
