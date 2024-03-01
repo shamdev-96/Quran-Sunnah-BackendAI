@@ -50,7 +50,8 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityRequirement(requirement);
 });
 
-builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+//we comment it out first, since for now, we didnt 
+//builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var MyAllowSpecificOrigins = "MyCorsPolicy";
 
