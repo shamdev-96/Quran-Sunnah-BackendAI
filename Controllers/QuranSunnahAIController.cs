@@ -48,7 +48,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
             }
 
 
-            var openai = new ChatGpt(openAiKey , new ChatGptOptions { MaxTokens = 4096L});
+            var openai = new ChatGpt(openAiKey , new ChatGptOptions { MaxTokens = 1000L});
             if (string.IsNullOrEmpty(request.Language))
             {
                 return BadRequest("No language selection is detected in the request");
@@ -59,10 +59,10 @@ namespace Quran_Sunnah_BackendAI.Controllers
             switch (request.Language)
             {
                 case "BM":
-                    completedQuestion = $"Berikan jawapan untuk soalan ini berpandukan Al-Quran dan Hadis: {request.Question}";
+                    completedQuestion = $"Berikan jawapan untuk soalan ini berpandukan Al-Quran dan Hadis dan sertakan dengan pautan yang berkaitan dengan jawapan: {request.Question}";
                     break;
                 case "EN":
-                    completedQuestion = $"Find any answer for this question based on Quran and Hadith: {request.Question}";
+                    completedQuestion = $"Find any answer for this question based on Quran and Hadith and give any related links about the answer: {request.Question}";
                     break;
                 default:
                     return BadRequest("The language selection is not valid");

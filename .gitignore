@@ -1,0 +1,8 @@
+OBJ 
+bin
+*.dll
+*.dll
+*.pdb
+obj/Debug/net8.0/Quran-Sunnah-BackendAI.pdb
+obj/Debug/net8.0/ref/Quran-Sunnah-BackendAI.dll
+obj/Debug/net8.0/refint/Quran-Sunnah-BackendAI.dll
