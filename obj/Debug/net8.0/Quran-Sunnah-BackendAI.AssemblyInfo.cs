@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Quran-Sunnah-BackendAI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65ded75811fbebae073647bcd5770a8ddd58fda4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7289f3b805272958c71852466cd1f6d5d7b377f9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Quran-Sunnah-BackendAI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Quran-Sunnah-BackendAI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

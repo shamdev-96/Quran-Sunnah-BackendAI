@@ -3,8 +3,6 @@ using ChatGPT.Net.DTO.ChatGPT;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Quran_Sunnah_BackendAI.Dtos;
-using Quran_Sunnah_BackendAI.Helpers;
-using System.Text.RegularExpressions;
 
 namespace Quran_Sunnah_BackendAI.Controllers
 {
@@ -79,13 +77,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
                     return NotFound("unable to retrieve answer from the source");
                 }
 
-
-                var answerResponse = new AskPayloadResponse
-                {
-                    Answer = MessageFormatterHelper.FormatAnswerByAppendingTag(response)
-                };
-
-                return Ok(answerResponse);
+                return Ok(new AskPayloadResponse() { Answer = response });
             }
 
             catch (Exception ex)

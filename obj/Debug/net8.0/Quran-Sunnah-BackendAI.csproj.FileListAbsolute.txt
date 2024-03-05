@@ -40,4 +40,3 @@ C:\Users\ssalleh\source\repos\Quran-Sunnah-BackendAI\Quran-Sunnah-BackendAI\bin\
 C:\Users\ssalleh\source\repos\Quran-Sunnah-BackendAI\Quran-Sunnah-BackendAI\bin\Debug\net8.0\Amazon.Lambda.Logging.AspNetCore.dll
 C:\Users\ssalleh\source\repos\Quran-Sunnah-BackendAI\Quran-Sunnah-BackendAI\bin\Debug\net8.0\Amazon.Lambda.RuntimeSupport.dll
 C:\Users\ssalleh\source\repos\Quran-Sunnah-BackendAI\Quran-Sunnah-BackendAI\bin\Debug\net8.0\Amazon.Lambda.Serialization.SystemTextJson.dll
-C:\Users\ssalleh\source\repos\Quran-Sunnah-BackendAI\Quran-Sunnah-BackendAI\obj\Debug\net8.0\Quran-Sunnah-BackendAI.sourcelink.json
