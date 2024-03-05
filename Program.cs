@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Quran_Sunnah_BackendAI.Middleware;
 
@@ -54,13 +55,13 @@ builder.Services.AddSwaggerGen(options =>
 //builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var MyAllowSpecificOrigins = "MyCorsPolicy";
-
+var allowedOrigins = new string[] { "http://localhost:300" , "https://www.quran-sunnah-ai.com/" };
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader().AllowAnyMethod();
         });
 });
