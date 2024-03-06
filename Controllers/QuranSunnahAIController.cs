@@ -2,6 +2,7 @@ using ChatGPT.Net;
 using ChatGPT.Net.DTO.ChatGPT;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Quran_Sunnah_BackendAI.Dtos;
 
 namespace Quran_Sunnah_BackendAI.Controllers
@@ -16,7 +17,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
         public QuranSunnahAIController(ILogger<QuranSunnahAIController> logger, IConfiguration configuration)
         {
             _logger = logger;
-            _configuration = configuration;
+            _configuration = configuration;          
         }
 
         [HttpGet("version")]
@@ -34,57 +35,94 @@ namespace Quran_Sunnah_BackendAI.Controllers
         [HttpPost("ask")]
         public async Task<IActionResult> AskAI([FromBody] AskPayloadRequest request)
         {
-            // retrieve ai key from configuration
-            var openAiKey = _configuration["OPENAI_API_KEY"];
 
-            if (openAiKey == null)
+            var listKeys = _configuration.GetSection("OPENAI_API_KEYS").Get<List<string>>();
+
+            var resultData = new ResultData();
+
+            foreach (var openAiKey in listKeys!)
             {
-                return NotFound("Key not found");
-            }
 
-            if (string.IsNullOrEmpty(request.Question))
-            {
-                return BadRequest("No question is detected in the request");
-            }
-
-
-            var openai = new ChatGpt(openAiKey , new ChatGptOptions { MaxTokens = 4096L});
-            if (string.IsNullOrEmpty(request.Language))
-            {
-                return BadRequest("No language selection is detected in the request");
-            }
-
-            string completedQuestion;
-
-            switch (request.Language)
-            {
-                case "BM":
-                    completedQuestion = $"Berikan jawapan untuk soalan ini berpandukan Al-Quran dan Hadis dan sertakan dengan pautan yang berkaitan dengan jawapan: {request.Question}";
-                    break;
-                case "EN":
-                    completedQuestion = $"Find any answer for this question based on Quran and Hadith and give any related links about the answer: {request.Question}";
-                    break;
-                default:
-                    return BadRequest("The language selection is not valid");
-            }
-
-            try
-            {
-                var response = await openai.Ask(completedQuestion);
-
-                if (response == null)
+                if (openAiKey == null)
                 {
-                    return NotFound("unable to retrieve answer from the source");
+                    resultData.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    resultData.Result = "Key not found";
+                    break;
                 }
 
-                return Ok(new AskPayloadResponse() { Answer = response });
+                if (string.IsNullOrEmpty(request.Question))
+                {
+                    resultData.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    resultData.Result = "No question is detected in the request";
+                    break;
+                }
+
+                var openai = new ChatGpt(openAiKey, new ChatGptOptions { MaxTokens = 1000L });
+
+                if (string.IsNullOrEmpty(request.Language))
+                {
+                    resultData.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    resultData.Result = "No language selection is detected in the request";
+                    break;
+                }
+
+                string completedQuestion;
+
+                switch (request.Language)
+                {
+                    case "BM":
+                        completedQuestion = $"Berikan jawapan untuk soalan ini berpandukan Al-Quran dan Hadis dan sertakan dengan pautan yang berkaitan dengan jawapan: {request.Question}";
+                        break;
+                    case "EN":
+                        completedQuestion = $"Find any answer for this question based on Quran and Hadith and give any related links about the answer: {request.Question}";
+                        break;
+                    default:
+                        return BadRequest("The language selection is not valid");
+                }
+
+                try
+                {
+                    var response = await openai.Ask(completedQuestion);
+
+                    if (response == null)
+                    {
+                        resultData.StatusCode = System.Net.HttpStatusCode.NotFound;
+                        resultData.Result = "unable to retrieve answer from the source";
+                        break;
+                    }
+
+                    resultData.StatusCode = System.Net.HttpStatusCode.OK;
+                    Console.WriteLine($"Response from API Key: {openAiKey} SUCCESS. READY FOR NEXT...");
+                    resultData.Result = new AskPayloadResponse() { Answer = response };
+                    break;
+                }
+
+                catch (HttpRequestException ex)
+                {
+                    if(ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                    {
+                        Console.WriteLine($"Response from API Key: {openAiKey} FAILED . RETRY...");
+                        continue;
+                    }
+
+                    resultData.StatusCode = ex.StatusCode;
+                    resultData.Result = ex.Message;
+                    break;
+            
+                }
             }
 
-            catch (Exception ex)
+            switch (resultData.StatusCode)
             {
-                return Problem(ex.Message);
+                case System.Net.HttpStatusCode.OK: 
+                    return Ok (resultData.Result);
+                case System.Net.HttpStatusCode.BadRequest:
+                    return BadRequest(resultData.Result);
+                case System.Net.HttpStatusCode.NotFound:
+                    return NotFound(resultData.Result);
+                default:
+                    return Problem(resultData.Result!.ToString());
             }
-
         }
     }
 }
