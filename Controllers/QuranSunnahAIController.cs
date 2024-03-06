@@ -48,7 +48,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
             }
 
 
-            var openai = new ChatGpt(openAiKey , new ChatGptOptions { MaxTokens = 1000L});
+            var openai = new ChatGpt(openAiKey , new ChatGptOptions { MaxTokens = 4096L});
             if (string.IsNullOrEmpty(request.Language))
             {
                 return BadRequest("No language selection is detected in the request");
