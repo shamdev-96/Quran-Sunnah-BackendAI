@@ -41,9 +41,8 @@ namespace Quran_Sunnah_BackendAI.Controllers
             var resultData = new ResultData();
             int retryCount = 0;
             int retryLimit = listKeys!.Count - 1;
-            int retryLimitLoop = 0;
+            //int retryLimitLoop = 0;
 
-          Retry:
             foreach (var openAiKey in listKeys!)
             {
 
@@ -109,18 +108,20 @@ namespace Quran_Sunnah_BackendAI.Controllers
                         Console.WriteLine($"Response from API Key: {openAiKey} FAILED . RETRY FOR {retryCount} time(s)...");
                         continue;
                     }
-                    else if (retryLimitLoop < 3)
-                    {
-                        retryCount = 0;
-                        retryLimitLoop++;
-                        goto Retry;
-                    }
-                    else
-                    {
-                        resultData.StatusCode = ex.StatusCode;
-                        resultData.Result = ex.Message;
-                        break;
-                    }  
+                    //else if (retryLimitLoop < 3)
+                    //{
+                    //    retryCount = 0;
+                    //    retryLimitLoop++;
+                    //    goto Retry;
+                    //}
+
+                    resultData.StatusCode = ex.StatusCode;
+                    resultData.Result = ex.Message;
+                    break;
+                    //else
+                    //{
+                       
+                    //}  
                 }
             }
 
