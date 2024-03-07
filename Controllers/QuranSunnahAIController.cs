@@ -39,7 +39,11 @@ namespace Quran_Sunnah_BackendAI.Controllers
             var listKeys = _configuration.GetSection("OPENAI_API_KEYS").Get<List<string>>();
 
             var resultData = new ResultData();
+            int retryCount = 0;
+            int retryLimit = listKeys!.Count - 1;
+            int retryLimitLoop = 0;
 
+          Retry:
             foreach (var openAiKey in listKeys!)
             {
 
@@ -99,16 +103,24 @@ namespace Quran_Sunnah_BackendAI.Controllers
 
                 catch (HttpRequestException ex)
                 {
-                    if(ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                    if(retryCount < retryLimit &&  ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
                     {
-                        Console.WriteLine($"Response from API Key: {openAiKey} FAILED . RETRY...");
+                        retryCount++;
+                        Console.WriteLine($"Response from API Key: {openAiKey} FAILED . RETRY FOR {retryCount} time(s)...");
                         continue;
                     }
-
-                    resultData.StatusCode = ex.StatusCode;
-                    resultData.Result = ex.Message;
-                    break;
-            
+                    else if (retryLimitLoop < 3)
+                    {
+                        retryCount = 0;
+                        retryLimitLoop++;
+                        goto Retry;
+                    }
+                    else
+                    {
+                        resultData.StatusCode = ex.StatusCode;
+                        resultData.Result = ex.Message;
+                        break;
+                    }  
                 }
             }
 
