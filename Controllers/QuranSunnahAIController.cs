@@ -103,16 +103,16 @@ namespace Quran_Sunnah_BackendAI.Controllers
             }
 
             //store result in mongoDB
-            var questionDoc = new QuestionDoc
-            {
-                Question = request.Question,
-                IsReponseSuccess = resultData.StatusCode == System.Net.HttpStatusCode.OK ? true : false,
-                Answer = response,
-                RequestDate = DateTime.Now,
-                ResponseTime = watch.ElapsedMilliseconds
-            };
+            //var questionDoc = new QuestionDoc
+            //{
+            //    Question = request.Question,
+            //    IsReponseSuccess = resultData.StatusCode == System.Net.HttpStatusCode.OK ? true : false,
+            //    Answer = response,
+            //    RequestDate = DateTime.Now,
+            //    ResponseTime = watch.ElapsedMilliseconds
+            //};
             
-           bool isSuccess =  await _mongoDbServices.InsertData<QuestionDoc>(MongoDbConstants.QuestionCollectionName, questionDoc);
+           //bool isSuccess =  await _mongoDbServices.InsertData<QuestionDoc>(MongoDbConstants.QuestionCollectionName, questionDoc);
 
             switch (resultData.StatusCode)
             {
