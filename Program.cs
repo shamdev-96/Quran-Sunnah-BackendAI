@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Quran_Sunnah_BackendAI.Interfaces;
 using Quran_Sunnah_BackendAI.Middleware;
+using Quran_Sunnah_BackendAI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +69,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSingleton<IAPIHttpClientWrapper, AIHttpClientWrapper>();
+builder.Services.AddSingleton<IMongoDbServices, MongoDbServices>();
 builder.Services.AddControllers();
 var app = builder.Build();
 

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Quran_Sunnah_BackendAI.Constant;
 using Quran_Sunnah_BackendAI.Dtos;
 using Quran_Sunnah_BackendAI.Interfaces;
+using System.Diagnostics;
 using System.Security.Principal;
 
 namespace Quran_Sunnah_BackendAI.Controllers
@@ -18,11 +20,13 @@ namespace Quran_Sunnah_BackendAI.Controllers
         private readonly ILogger<QuranSunnahAIController> _logger;
         private IConfiguration _configuration;
         private IAPIHttpClientWrapper _apiHttpClientWrapper;
-        public QuranSunnahAIController(ILogger<QuranSunnahAIController> logger, IConfiguration configuration, IAPIHttpClientWrapper apiHttpClientWrapper)
+        private IMongoDbServices _mongoDbServices;
+        public QuranSunnahAIController(ILogger<QuranSunnahAIController> logger, IConfiguration configuration, IAPIHttpClientWrapper apiHttpClientWrapper , IMongoDbServices mongoDbServices)
         {
             _logger = logger;
             _configuration = configuration;
             _apiHttpClientWrapper = apiHttpClientWrapper;
+            _mongoDbServices = mongoDbServices;
         }
 
         [HttpGet("version")]
@@ -64,6 +68,8 @@ namespace Quran_Sunnah_BackendAI.Controllers
             if(!request.Language.Equals("BM") || !!request.Language.Equals("EN"))
                 return BadRequest("The language selection is not valid");
 
+            var watch = new Stopwatch();
+            var response = string.Empty;
             try
             {
                 var requestObject = new RequestObject { Input = new Input { Question = request.Question } };
@@ -72,9 +78,11 @@ namespace Quran_Sunnah_BackendAI.Controllers
 
                 //string formattedJson = string.Format(json, request.Question);
 
-                var response = await _apiHttpClientWrapper.SendAsync(json);
+                watch.Start();
+               response = await _apiHttpClientWrapper.SendAsync(json);
+                watch.Stop();
 
-                if (response == null)
+                if (string.IsNullOrEmpty(response))
                 {
                     resultData.StatusCode = System.Net.HttpStatusCode.NotFound;
                     resultData.Result = "unable to retrieve answer from the source";
@@ -89,12 +97,22 @@ namespace Quran_Sunnah_BackendAI.Controllers
 
             catch (HttpRequestException ex)
             {
-
-
                 resultData.StatusCode = ex.StatusCode;
                 resultData.Result = ex.Message;
  
             }
+
+            //store result in mongoDB
+            var questionDoc = new QuestionDoc
+            {
+                Question = request.Question,
+                IsReponseSuccess = resultData.StatusCode == System.Net.HttpStatusCode.OK ? true : false,
+                Answer = response,
+                RequestDate = DateTime.Now,
+                ResponseTime = watch.ElapsedMilliseconds
+            };
+            
+           bool isSuccess =  await _mongoDbServices.InsertData<QuestionDoc>(MongoDbConstants.QuestionCollectionName, questionDoc);
 
             switch (resultData.StatusCode)
             {
