@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Providers\AzadProvider.cs~RF9a4e675b.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.7.0" />
     <PackageReference Include="ChatGPT.Net" Version="2.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.25.0" />

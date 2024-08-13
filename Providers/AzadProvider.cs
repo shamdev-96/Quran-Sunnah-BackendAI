@@ -1,20 +1,28 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Quran_Sunnah_BackendAI.Configurations;
+using Quran_Sunnah_BackendAI.Dtos;
 using Quran_Sunnah_BackendAI.Interfaces;
-using System.Text;
 
-namespace Quran_Sunnah_BackendAI.Middleware
+namespace Quran_Sunnah_BackendAI.Providers
 {
 
-    public class AIHttpClientWrapper : IAPIHttpClientWrapper
+    /// <summary>
+    /// A provider class that provided by Azad to call special LLM endpoint to get the query result.
+    /// </summary>
+    public class AzadProvider : IQuranSunnahBackendAPI
     {
         private IConfiguration _configuration;
+        public bool Active { get; private set; }
 
-        public AIHttpClientWrapper(IConfiguration configuration)
+        public AzadProvider(IConfiguration configuration, IOptions<QuranSunnahProviderOptions> options)
         {
             _configuration = configuration;
+            Active = options.Value.AzadProvider.Active;
         }
 
-        public async Task<string> SendAsync(string jsonData)
+        public async Task<ResultData> SendRequestAsync(AskPayloadRequest payloadRequest)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -24,8 +32,10 @@ namespace Quran_Sunnah_BackendAI.Middleware
 
                     string apiToken = _configuration["BASEMODEL_API_TOKEN"]!;
 
+                    string json = JsonConvert.SerializeObject(new RequestObject { Input = new Input { Question = payloadRequest.Question } }, Formatting.Indented);
+
                     request.Headers.Add("Authorization", apiToken);
-                    var content = new StringContent(jsonData, null, "application/json");
+                    var content = new StringContent(json, null, "application/json");
                     request.Content = content;
 
                     // Sending a POST request to the API
@@ -45,19 +55,20 @@ namespace Quran_Sunnah_BackendAI.Middleware
 
                         Console.WriteLine("Response from API:");
                         Console.WriteLine(responseBody);
-                        
+
                     }
                     else
                     {
+                        responseBody =  response.ReasonPhrase  ?? "Error detail is not returned by provider";
                         Console.WriteLine($"Failed to call API. Status code: {response.StatusCode}");
                     }
 
-                    return responseBody;
+                    return new ResultData { StatusCode = response.StatusCode, Result =  responseBody };
 
                 }
-                catch (HttpRequestException ex)
+                catch (Exception)
                 {
-                    return ex.Message;
+                    throw;
                 }
 
             }

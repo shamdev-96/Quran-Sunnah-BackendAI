@@ -2,6 +2,6 @@
 {
     public class AskPayloadResponse
     {
-        public string? Answer { get; set; }
+        public string? ResultMessage { get; set; }
     }
 }
