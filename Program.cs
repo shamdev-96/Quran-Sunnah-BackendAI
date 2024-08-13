@@ -79,10 +79,6 @@ builder.Services.AddControllers();
 
 //builder.Services.AddSingleton<IAPIHttpClientWrapper, AIHttpClientWrapper>();
 
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-     serverOptions.Listen(IPAddress.Any, 8080);
-});
 
 //builder.Services.AddSingleton<IMongoDbServices, MongoDbServices>();
 var app = builder.Build();
