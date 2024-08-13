@@ -94,6 +94,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+    app.UseHsts();
+}
+
 app.MapControllers();
 
 app.Run();
