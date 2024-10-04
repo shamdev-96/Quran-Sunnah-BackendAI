@@ -4,7 +4,7 @@ using Supabase.Postgrest.Models;
 namespace Quran_Sunnah_BackendAI.Models
 {
     [Table("question-answer")]
-    public class QuestionData : SupabaseModel
+    public class QuestionData : BaseModel
     {
         [PrimaryKey("id", false)]
         public int Id { get; set; }
