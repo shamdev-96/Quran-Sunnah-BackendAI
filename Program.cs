@@ -5,6 +5,7 @@ using Quran_Sunnah_BackendAI.Interfaces;
 using Quran_Sunnah_BackendAI.Middleware;
 using Quran_Sunnah_BackendAI.Providers;
 using Quran_Sunnah_BackendAI.Services;
+using Supabase;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<QuranSunnahProviderOptions>(builder.Configuration.GetSection("ProviderSettings"));
 
 // Register the providers
+builder.Services.AddTransient<ISupabaseDatabaseServices,SupabaseDatabaseServices>();
 builder.Services.AddTransient<IQuranSunnahBackendAPI,OpenAIProvider>();
 builder.Services.AddTransient<IQuranSunnahBackendAPI,AzadProvider>();
 
