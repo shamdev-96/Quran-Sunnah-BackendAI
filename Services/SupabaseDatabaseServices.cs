@@ -1,4 +1,5 @@
-﻿using Quran_Sunnah_BackendAI.Interfaces;
+﻿using Quran_Sunnah_BackendAI.Dtos;
+using Quran_Sunnah_BackendAI.Interfaces;
 using Quran_Sunnah_BackendAI.Models;
 using Supabase;
 using Supabase.Gotrue;
@@ -11,9 +12,11 @@ namespace Quran_Sunnah_BackendAI.Services
 {
     public class SupabaseDatabaseServices : ISupabaseDatabaseServices
     {
+        private readonly IEmailServices _emailServices;
         private readonly Supabase.Client _supabaseClient;
         private bool _isInitialized;
-        public SupabaseDatabaseServices(IConfiguration configuration)
+
+        public SupabaseDatabaseServices(IConfiguration configuration, IEmailServices emailServices)
         {
             var url = configuration["SUPABASE_URL"];
             var key = configuration["SUPABASE_APIKEY"];
@@ -22,40 +25,49 @@ namespace Quran_Sunnah_BackendAI.Services
                 AutoRefreshToken = true,
                 AutoConnectRealtime = true,
             };
-
+            _emailServices = emailServices;
             _supabaseClient = new Supabase.Client(url, key, options);
         }
 
-       public bool IsInitialized => _isInitialized;
+        public bool IsInitialized => _isInitialized;
 
         public async Task InitializeSupabase()
         {
             try
             {
                 await _supabaseClient.InitializeAsync();
-               _isInitialized = true;
+                _isInitialized = true;
             }
             catch (Exception ex)
             {
-                string exMsg = ex.ToString() ;
+                var emailContent = new EmailExceptionContent
+                {
+                    StackTrace = ex.StackTrace,
+                    ExceptionDateTime = DateTime.Now,
+                };
+
+                //_emailServices.SendExceptionEmail(emailContent);
                 _isInitialized = false;
             }
         }
 
-        public async Task<bool> InsertQuestionData(QuestionData modelData)
+        public async Task InsertQuestionData(QuestionData modelData)
         {
-            bool isSuccess;
             try
             {
                 await _supabaseClient.From<Models.QuestionData>().Insert(modelData);
-                isSuccess = true;
             }
             catch (Exception ex)
             {
-                //TODO: to handle the exception here properly
-                isSuccess = false;
-            }         
-            return isSuccess;
+                var emailContent = new EmailExceptionContent
+                {
+                    StackTrace = ex.StackTrace,
+                    ExceptionDateTime = DateTime.Now,
+                };
+
+                //_emailServices.SendExceptionEmail(emailContent);
+            }
+    
         }
     }
 }

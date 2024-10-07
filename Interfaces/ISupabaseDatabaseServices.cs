@@ -6,6 +6,6 @@ namespace Quran_Sunnah_BackendAI.Interfaces
     {
         bool IsInitialized { get; }
         Task InitializeSupabase();
-        Task<bool> InsertQuestionData(QuestionData modelData);
+        Task InsertQuestionData(QuestionData modelData);
     }
 }

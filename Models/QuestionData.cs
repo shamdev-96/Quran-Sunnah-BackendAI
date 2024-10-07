@@ -22,7 +22,7 @@ namespace Quran_Sunnah_BackendAI.Models
         public DateTime RequestDateTime { get; set; }
 
         [Column("responseTimeSeconds")]
-        public long ResponseTimeSeconds { get; set; }
+        public double ResponseTimeSeconds { get; set; }
 
     }
 }

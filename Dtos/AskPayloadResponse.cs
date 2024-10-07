@@ -1,7 +1,10 @@
-﻿namespace Quran_Sunnah_BackendAI.Dtos
+﻿using System.Net;
+
+namespace Quran_Sunnah_BackendAI.Dtos
 {
     public class AskPayloadResponse
     {
-        public string? ResultMessage { get; set; }
+        public HttpStatusCode? StatusCode { get; set; }
+        public string? Result { get; set; }
     }
 }

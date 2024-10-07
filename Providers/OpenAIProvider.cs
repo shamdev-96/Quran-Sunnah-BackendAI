@@ -17,14 +17,14 @@ namespace Quran_Sunnah_BackendAI.Providers
             _configuration = configuration;
             Active = options.Value.OpenAIProvider.Active;
         }
-        public async Task<ResultData> SendRequestAsync(AskPayloadRequest payloadRequest)
+        public async Task<AskPayloadResponse> SendRequestAsync(AskPayloadRequest payloadRequest)
         {
             var listKeys = _configuration.GetSection("OPENAI_API_KEYS").Get<List<string>>();
             int retryCount = 0;
             int retryLimit = listKeys!.Count - 1;
             int retryLimitLoop = 0;
 
-            var resultData = new ResultData();
+            var resultData = new AskPayloadResponse();
 
         Retry:
             foreach (var openAiKey in listKeys!)
@@ -57,7 +57,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                         completedQuestion = $"Find any answer for this question based on Quran and Hadith and give any related links about the answer: {payloadRequest.Question}";
                         break;
                     default:
-                        return new ResultData { StatusCode = System.Net.HttpStatusCode.BadRequest , Result = "The language selection is not valid" };
+                        return new AskPayloadResponse { StatusCode = System.Net.HttpStatusCode.BadRequest , Result = "The language selection is not valid" };
                 }
 
                 try

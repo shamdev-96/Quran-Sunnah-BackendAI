@@ -22,7 +22,7 @@ namespace Quran_Sunnah_BackendAI.Providers
             Active = options.Value.AzadProvider.Active;
         }
 
-        public async Task<ResultData> SendRequestAsync(AskPayloadRequest payloadRequest)
+        public async Task<AskPayloadResponse> SendRequestAsync(AskPayloadRequest payloadRequest)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -63,7 +63,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                         Console.WriteLine($"Failed to call API. Status code: {response.StatusCode}");
                     }
 
-                    return new ResultData { StatusCode = response.StatusCode, Result =  responseBody };
+                    return new AskPayloadResponse { StatusCode = response.StatusCode, Result =  responseBody };
 
                 }
                 catch (Exception)

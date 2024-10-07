@@ -50,7 +50,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
             watch.Start();
             var activeProvider = _providers.FirstOrDefault(p => p.Active);
 
-            var resultData = new ResultData();
+            var resultData = new AskPayloadResponse();
 
             //int retryLimitLoop = 0;
 
@@ -82,7 +82,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
                 Question = request.Question,
                 Answer = isSuccessResponse ? resultData.Result : null,
                 IsSuccessResponse = isSuccessResponse,
-                ResponseTimeSeconds = watch.ElapsedMilliseconds,
+                ResponseTimeSeconds = watch.Elapsed.TotalSeconds,
                 RequestDateTime = DateTime.Now
             };
 
