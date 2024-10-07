@@ -20,6 +20,10 @@ namespace Quran_Sunnah_BackendAI.Providers
         {
             _configuration = configuration;
             Active = options.Value.AzadProvider.Active;
+            if (Active)
+            {
+                Console.WriteLine("Our Backend AI Activated using AzadProvider");
+            }
         }
 
         public async Task<AskPayloadResponse> SendRequestAsync(AskPayloadRequest payloadRequest)

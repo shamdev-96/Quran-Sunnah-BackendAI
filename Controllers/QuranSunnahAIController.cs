@@ -19,16 +19,16 @@ namespace Quran_Sunnah_BackendAI.Controllers
     [Route("[controller]")]
     public class QuranSunnahAIController : ControllerBase
     {
-        private readonly ILogger<QuranSunnahAIController> _logger;
         private IConfiguration _configuration;
         private readonly IEnumerable<IQuranSunnahBackendAPI> _providers;
+        private static  IQuranSunnahBackendAPI? _activeProvider;
         private readonly ISupabaseDatabaseServices _supabase;
-        public QuranSunnahAIController(ILogger<QuranSunnahAIController> logger, IConfiguration configuration, IEnumerable<IQuranSunnahBackendAPI> providers , ISupabaseDatabaseServices supabase)
+        public QuranSunnahAIController(IConfiguration configuration, IEnumerable<IQuranSunnahBackendAPI> providers , ISupabaseDatabaseServices supabase)
         {
-            _logger = logger;
             _configuration = configuration;
             _providers = providers;
             _supabase = supabase;
+            _activeProvider = _providers.FirstOrDefault(p => p.Active);
         }
 
         [HttpGet("version")]
@@ -48,7 +48,6 @@ namespace Quran_Sunnah_BackendAI.Controllers
         {
             var watch = new Stopwatch();
             watch.Start();
-            var activeProvider = _providers.FirstOrDefault(p => p.Active);
 
             var resultData = new AskPayloadResponse();
 
@@ -71,9 +70,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
             if (!request.Language.Equals("BM") || !!request.Language.Equals("EN"))
                 return BadRequest("The language selection is not valid");
 
-            resultData = await activeProvider!.SendRequestAsync(request);
-
-
+            resultData = await _activeProvider!.SendRequestAsync(request);
 
             var isSuccessResponse = resultData.StatusCode == System.Net.HttpStatusCode.OK;
 

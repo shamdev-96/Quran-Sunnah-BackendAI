@@ -16,6 +16,10 @@ namespace Quran_Sunnah_BackendAI.Providers
         {
             _configuration = configuration;
             Active = options.Value.OpenAIProvider.Active;
+            if (Active)
+            {
+                Console.WriteLine("Our Backend AI Activated using OpenAIProvider");
+            }
         }
         public async Task<AskPayloadResponse> SendRequestAsync(AskPayloadRequest payloadRequest)
         {
@@ -72,7 +76,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                     }
 
                     resultData.StatusCode = System.Net.HttpStatusCode.OK;
-                    Console.WriteLine($"Response from API Key: {openAiKey} SUCCESS. READY FOR NEXT...");
+                    Console.WriteLine($"Response from OpenAI SUCCESS");
                     resultData.Result =  response;
                     break;
                 }
@@ -82,7 +86,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                     if (retryCount < retryLimit && ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
                     {
                         retryCount++;
-                        Console.WriteLine($"Response from API Key: {openAiKey} FAILED . RETRY FOR {retryCount} time(s)...");
+                        Console.WriteLine($"Response from OpenAI FAILED with Exception:  {ex.Message} . RETRY FOR {retryCount} time(s)...");
                         continue;
                     }
                     else if (retryLimitLoop < 3)

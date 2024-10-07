@@ -37,16 +37,11 @@ namespace Quran_Sunnah_BackendAI.Services
             {
                 await _supabaseClient.InitializeAsync();
                 _isInitialized = true;
+                Console.WriteLine($"Initialize Connection to Supabase is SUCCESS");
             }
             catch (Exception ex)
             {
-                var emailContent = new EmailExceptionContent
-                {
-                    StackTrace = ex.StackTrace,
-                    ExceptionDateTime = DateTime.Now,
-                };
-
-                //_emailServices.SendExceptionEmail(emailContent);
+                Console.WriteLine($"FAILED to Initialize Connection to Supabase with Exception: {ex.Message}");
                 _isInitialized = false;
             }
         }
@@ -56,18 +51,13 @@ namespace Quran_Sunnah_BackendAI.Services
             try
             {
                 await _supabaseClient.From<Models.QuestionData>().Insert(modelData);
+                Console.WriteLine($" InsertQuestionData to Supabase is SUCCESS");
             }
             catch (Exception ex)
             {
-                var emailContent = new EmailExceptionContent
-                {
-                    StackTrace = ex.StackTrace,
-                    ExceptionDateTime = DateTime.Now,
-                };
-
-                //_emailServices.SendExceptionEmail(emailContent);
+                Console.WriteLine($"FAILED to InsertQuestionData to Supabase with Exception: {ex.Message}");
             }
-    
+
         }
     }
 }
