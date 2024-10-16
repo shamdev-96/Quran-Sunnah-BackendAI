@@ -41,7 +41,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                     break;
                 }
 
-                var openai = new ChatGpt(openAiKey, new ChatGptOptions { MaxTokens = 1000L });
+                var openai = new ChatGpt(openAiKey, new ChatGptOptions { MaxTokens = 5000L });
 
                 if (string.IsNullOrEmpty(payloadRequest.Language))
                 {
