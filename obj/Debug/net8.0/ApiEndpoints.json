@@ -13,7 +13,17 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "Quran_Sunnah_BackendAI.Dtos.AskPayloadResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "Quran_Sunnah_BackendAI.Controllers.QuranSunnahAIController",
