@@ -14,6 +14,7 @@ using System.Security.Principal;
 
 namespace Quran_Sunnah_BackendAI.Controllers
 {
+    [EnableCors]
     [ApiController]
     [Route("[controller]")]
     public class QuranSunnahAIController : ControllerBase
@@ -40,7 +41,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
         [Route("QuranSunnahAI/ask")]
         public IActionResult HandlePreflight()
         {
-            Response.Headers.Append("Access-Control-Allow-Origin", "https://www.quran-sunnah-ai.com/");
+            Response.Headers.Append("Access-Control-Allow-Origin", "https://www.quran-sunnah-ai.com");
             Response.Headers.Append("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
             Response.Headers.Append("Access-Control-Allow-Headers", "Authorization, Content-Type,Access-Control-Allow-Origin,x-api-key");
 
