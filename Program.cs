@@ -25,7 +25,18 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 app.UseApiKeyAuthentication();
-app.UseCors();
+app.UseCors(policy =>
+{
+    policy.WithOrigins("https://www.quran-sunnah-ai.com")  // Allow specific origin
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .AllowCredentials(); // If using credentials like cookies or tokens
+});
+
+// Ensure UseAuthentication comes after UseCors
+app.UseAuthentication();
+app.UseAuthorization(); 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
