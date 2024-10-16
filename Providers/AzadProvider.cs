@@ -67,7 +67,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                         Console.WriteLine($"Failed to call API. Status code: {response.StatusCode}");
                     }
 
-                    return new AskPayloadResponse { StatusCode = response.StatusCode, Result =  responseBody };
+                    return new AskPayloadResponse { StatusCode = response.StatusCode, Answer =  responseBody };
 
                 }
                 catch (Exception)

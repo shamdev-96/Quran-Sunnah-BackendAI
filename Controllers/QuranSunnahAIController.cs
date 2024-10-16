@@ -56,13 +56,13 @@ namespace Quran_Sunnah_BackendAI.Controllers
             if (string.IsNullOrEmpty(request.Question))
             {
                 resultData.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                resultData.Result = "No question is detected in the request";
+                resultData.Answer = "No question is detected in the request";
             }
 
             if (string.IsNullOrEmpty(request.Language))
             {
                 resultData.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                resultData.Result = "No language selection is detected in the request";
+                resultData.Answer = "No language selection is detected in the request";
             }
 
             resultData = await _activeProvider!.SendRequestAsync(request);
@@ -72,7 +72,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
             var questionData = new QuestionData
             {
                 Question = request.Question,
-                Answer = isSuccessResponse ? resultData.Result : null,
+                Answer = isSuccessResponse ? resultData.Answer : null,
                 IsSuccessResponse = isSuccessResponse,
                 ResponseTimeSeconds = watch.Elapsed.TotalSeconds,
                 RequestDateTime = DateTime.Now
@@ -87,7 +87,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
 
             await _supabase.InsertQuestionData(questionData);
 
-            return new AskPayloadResponse { StatusCode = resultData.StatusCode!, Result = resultData.Result };
+            return new AskPayloadResponse { StatusCode = resultData.StatusCode!, Answer = resultData.Answer };
 
         }
     }

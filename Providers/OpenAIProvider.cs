@@ -37,7 +37,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                 if (openAiKey == null)
                 {
                     resultData.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    resultData.Result = "Key not found";
+                    resultData.Answer = "Key not found";
                     break;
                 }
 
@@ -46,7 +46,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                 if (string.IsNullOrEmpty(payloadRequest.Language))
                 {
                     resultData.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    resultData.Result = "No language selection is detected in the request";
+                    resultData.Answer = "No language selection is detected in the request";
                     break;
                 }
 
@@ -61,7 +61,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                         completedQuestion = $"Find any answer for this question based on Quran and Hadith and give any related links about the answer: {payloadRequest.Question}";
                         break;
                     default:
-                        return new AskPayloadResponse { StatusCode = System.Net.HttpStatusCode.BadRequest , Result = "The language selection is not valid" };
+                        return new AskPayloadResponse { StatusCode = System.Net.HttpStatusCode.BadRequest , Answer = "The language selection is not valid" };
                 }
 
                 try
@@ -71,13 +71,13 @@ namespace Quran_Sunnah_BackendAI.Providers
                     if (response == null)
                     {
                         resultData.StatusCode = System.Net.HttpStatusCode.NotFound;
-                        resultData.Result = "unable to retrieve answer from the source";
+                        resultData.Answer = "unable to retrieve answer from the source";
                         break;
                     }
 
                     resultData.StatusCode = System.Net.HttpStatusCode.OK;
                     Console.WriteLine($"Response from OpenAI SUCCESS");
-                    resultData.Result =  response;
+                    resultData.Answer =  response;
                     break;
                 }
 
@@ -98,7 +98,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                     else
                     {
                         resultData.StatusCode = ex.StatusCode;
-                        resultData.Result = ex.Message;
+                        resultData.Answer = ex.Message;
                         break;
                     }
                 }
