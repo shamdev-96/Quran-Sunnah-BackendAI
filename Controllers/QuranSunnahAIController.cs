@@ -37,18 +37,6 @@ namespace Quran_Sunnah_BackendAI.Controllers
             return _configuration["VERSION"]!;
         }
 
-        [HttpOptions]
-        [Route("QuranSunnahAI/ask")]
-        public IActionResult HandlePreflight()
-        {
-            Response.Headers.Append("Access-Control-Allow-Origin", "https://www.quran-sunnah-ai.com");
-            Response.Headers.Append("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-            Response.Headers.Append("Access-Control-Allow-Headers", "Authorization, Content-Type,Access-Control-Allow-Origin,x-api-key");
-
-            return Ok();
-        }
-
-
         /// <summary>
         /// A POST endpoint that will accept a request with params of a question and language selection
         /// and the answer will be retrieved from OpenAI integration
