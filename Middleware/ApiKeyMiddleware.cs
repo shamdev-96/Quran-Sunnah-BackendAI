@@ -16,7 +16,7 @@ namespace Quran_Sunnah_BackendAI.Middleware
         public async Task Invoke(HttpContext context)
         {
 
-            if(!context.Request.Path.Value!.Contains("/version"))
+            if(!context.Request.Path.Value!.Contains("/version") && context.Request.Method != "OPTIONS" )
             {
                 // Check if the API key exists in the request headers
                 if (!context.Request.Headers.TryGetValue(ApiKeyName, out var apiKeyValue))
