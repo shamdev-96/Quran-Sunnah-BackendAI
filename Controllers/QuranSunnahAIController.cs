@@ -44,7 +44,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
         /// <param name="request">Contains string of question and language selection (only BM & EN is accepted) </param>
         /// <returns></returns>
         [HttpPost("ask")]
-        public async Task<IActionResult> AskAI([FromBody] AskPayloadRequest request)
+        public async Task<AskPayloadResponse> AskAI([FromBody] AskPayloadRequest request)
         {
             var watch = new Stopwatch();
             watch.Start();
@@ -59,16 +59,11 @@ namespace Quran_Sunnah_BackendAI.Controllers
                 resultData.Result = "No question is detected in the request";
             }
 
-
             if (string.IsNullOrEmpty(request.Language))
             {
                 resultData.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 resultData.Result = "No language selection is detected in the request";
             }
-
-
-            if (!request.Language.Equals("BM") || !!request.Language.Equals("EN"))
-                return BadRequest("The language selection is not valid");
 
             resultData = await _activeProvider!.SendRequestAsync(request);
 
@@ -92,7 +87,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
 
             await _supabase.InsertQuestionData(questionData);
 
-            return new ContentResult { StatusCode = (int)resultData.StatusCode!.Value, Content = resultData.Result };
+            return new AskPayloadResponse { StatusCode = resultData.StatusCode!, Result = resultData.Result };
 
         }
     }
