@@ -16,14 +16,20 @@ namespace Quran_Sunnah_BackendAI.Providers
         private IConfiguration _configuration;
         public bool Active { get; private set; }
 
+        public bool IsInitialized { get; private set; }
         public AzadProvider(IConfiguration configuration, IOptions<QuranSunnahProviderOptions> options)
         {
-            _configuration = configuration;
-            Active = options.Value.AzadProvider.Active;
-            if (Active)
+            if (!IsInitialized)
             {
-                Console.WriteLine("Our Backend AI Activated using AzadProvider");
+                IsInitialized = true;
+                _configuration = configuration;
+                Active = options.Value.AzadProvider.Active;
+                if (Active)
+                {
+                    Console.WriteLine("Our Backend AI Activated using AzadProvider");
+                }
             }
+
         }
 
         public async Task<AskPayloadResponse> SendRequestAsync(AskPayloadRequest payloadRequest)
@@ -63,11 +69,11 @@ namespace Quran_Sunnah_BackendAI.Providers
                     }
                     else
                     {
-                        responseBody =  response.ReasonPhrase  ?? "Error detail is not returned by provider";
+                        responseBody = response.ReasonPhrase ?? "Error detail is not returned by provider";
                         Console.WriteLine($"Failed to call API. Status code: {response.StatusCode}");
                     }
 
-                    return new AskPayloadResponse { StatusCode = response.StatusCode, Answer =  responseBody };
+                    return new AskPayloadResponse { StatusCode = response.StatusCode, Answer = responseBody };
 
                 }
                 catch (Exception)

@@ -20,15 +20,20 @@ namespace Quran_Sunnah_BackendAI.Controllers
     public class QuranSunnahAIController : ControllerBase
     {
         private IConfiguration _configuration;
-        private readonly IEnumerable<IQuranSunnahBackendAPI> _providers;
+        private static IEnumerable<IQuranSunnahBackendAPI> _providers;
         private static  IQuranSunnahBackendAPI? _activeProvider;
-        private readonly ISupabaseDatabaseServices _supabase;
+        private static ISupabaseDatabaseServices _supabase;
         public QuranSunnahAIController(IConfiguration configuration, IEnumerable<IQuranSunnahBackendAPI> providers , ISupabaseDatabaseServices supabase)
         {
             _configuration = configuration;
-            _providers = providers;
-            _supabase = supabase;
-            _activeProvider = _providers.FirstOrDefault(p => p.Active);
+
+            if (_providers == null && _supabase == null && _activeProvider == null)
+            {
+                _providers = providers;
+                _supabase = supabase;
+                _activeProvider = _providers!.FirstOrDefault(p => p.Active);
+            }
+
         }
 
         [HttpGet("version")]
@@ -87,7 +92,7 @@ namespace Quran_Sunnah_BackendAI.Controllers
 
             await _supabase.InsertQuestionData(questionData);
 
-            return new AskPayloadResponse { StatusCode = resultData.StatusCode!, Answer = resultData.Answer };
+            return resultData;
 
         }
     }

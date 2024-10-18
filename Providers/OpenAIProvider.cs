@@ -3,7 +3,9 @@ using ChatGPT.Net.DTO.ChatGPT;
 using Microsoft.Extensions.Options;
 using Quran_Sunnah_BackendAI.Configurations;
 using Quran_Sunnah_BackendAI.Dtos;
+using Quran_Sunnah_BackendAI.Helpers;
 using Quran_Sunnah_BackendAI.Interfaces;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Quran_Sunnah_BackendAI.Providers
 {
@@ -11,27 +13,39 @@ namespace Quran_Sunnah_BackendAI.Providers
     {
         private IConfiguration _configuration;
         public bool Active { get; private set; }
+        public bool IsInitialized { get; private set; }
+
+        private readonly ApiLoadBalancer _loadBalancer;
+        private List<string> _apiKeys;
 
         public OpenAIProvider(IConfiguration configuration, IOptions<QuranSunnahProviderOptions> options)
         {
-            _configuration = configuration;
-            Active = options.Value.OpenAIProvider.Active;
-            if (Active)
+            if (!IsInitialized)
             {
-                Console.WriteLine("Our Backend AI Activated using OpenAIProvider");
+                IsInitialized = true;
+                _configuration = configuration;
+                Active = options.Value.OpenAIProvider.Active;
+
+                _apiKeys = _configuration.GetSection("OPENAI_API_KEYS").Get<List<string>>()!;
+
+                _loadBalancer = new ApiLoadBalancer(_apiKeys);
+
+                if (Active)
+                {
+                    Console.WriteLine("Our Backend AI Activated using OpenAIProvider");
+                }
             }
         }
         public async Task<AskPayloadResponse> SendRequestAsync(AskPayloadRequest payloadRequest)
         {
-            var listKeys = _configuration.GetSection("OPENAI_API_KEYS").Get<List<string>>();
             int retryCount = 0;
-            int retryLimit = listKeys!.Count - 1;
+            int retryLimit = _apiKeys!.Count - 1;
             int retryLimitLoop = 0;
 
             var resultData = new AskPayloadResponse();
 
         Retry:
-            foreach (var openAiKey in listKeys!)
+            foreach (var openAiKey in _apiKeys!)
             {
 
                 if (openAiKey == null)
@@ -40,6 +54,8 @@ namespace Quran_Sunnah_BackendAI.Providers
                     resultData.Answer = "Key not found";
                     break;
                 }
+
+                var apiKey = _loadBalancer.GetApiKey();
 
                 var openai = new ChatGpt(openAiKey, new ChatGptOptions { MaxTokens = 1500L });
 
