@@ -71,7 +71,7 @@ namespace Quran_Sunnah_BackendAI.Providers
                 switch (payloadRequest.Language)
                 {
                     case "BM":
-                        completedQuestion = $"Berikan jawapan untuk soalan ini berpandukan Al-Quran dan Hadis dan sertakan dengan pautan yang berkaitan dengan jawapan: {payloadRequest.Question}";
+                        completedQuestion = $"Berikan jawapan untuk soalan ini di dalam Bahasa Malaysia berpandukan Al-Quran dan Hadis dan sertakan dengan pautan yang berkaitan dengan jawapan: {payloadRequest.Question}";
                         break;
                     case "EN":
                         completedQuestion = $"Find any answer for this question based on Quran and Hadith and give any related links about the answer: {payloadRequest.Question}";
